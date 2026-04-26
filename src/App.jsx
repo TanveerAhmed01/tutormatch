@@ -967,7 +967,11 @@ function GeneratePage({plan,setPage}){
       const messages=uploadMode==="file"&&uploadedFile
         ?[{role:"user",content:[{type:"document",source:{type:"base64",media_type:uploadedFile.mediaType,data:uploadedFile.base64}},{type:"text",text:`Generate ${count} ${tl} questions at ${difficulty} difficulty from this file.\n${spec}`}]}]
         :[{role:"user",content:`Generate ${count} ${tl} questions on "${topic}" in ${subject} at ${difficulty} difficulty.\n${spec}`}];
-      const res=await fetch(window.API_BASE_URL + "/api/generate-questions",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:uploadMode==="file"&&uploadedFile?`Generate ${count} ${tl} questions from uploaded file at ${difficulty} difficulty.`:prompt})});
+      const prompt = uploadMode==="file"&&uploadedFile
+  ? `Generate ${count} ${tl} questions at ${difficulty} difficulty from the uploaded file. Return ONLY JSON array: [{"q":"...","options":["A)...","B)...","C)...","D)..."],"answer":"A"}]`
+  : `Generate ${count} ${tl} questions on "${topic}" in ${subject} at ${difficulty} difficulty. Return ONLY JSON array: [{"q":"...","options":["A)...","B)...","C)...","D)..."],"answer":"A"}]`;
+
+const res=await fetch(window.API_BASE_URL + "/api/generate-questions",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});
       const data=await res.json();
       const raw=data.content?.find(b=>b.type==="text")?.text||"[]";
       setQuestions(JSON.parse(raw.replace(/```json|```/g,"").trim()));
