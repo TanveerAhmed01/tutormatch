@@ -1,7 +1,5 @@
 // ─── API CONFIGURATION ───────────────────────────────────────────────────────
-const API_BASE_URL = import.meta.env.PROD 
-  ? 'https://tutormatch-beige.vercel.app'
-  : 'http://localhost:3001'
+const API_BASE_URL = 'https://tutormatch-beige.vercel.app'
 
 // Make it globally available for all fetch calls
 window.API_BASE_URL = API_BASE_URL
