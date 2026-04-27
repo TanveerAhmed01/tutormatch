@@ -21,8 +21,8 @@ const SLOTS    = ["Mon 9am","Mon 2pm","Mon 6pm","Tue 10am","Tue 4pm","Wed 9am","
 
 const PLANS = [
   { id:"free",  name:"Free",  price:0,      color:C.muted,  features:["5 AI questions/day","MCQ only","1 subject","Basic analytics"],                                              cta:"Get Started",     popular:false },
-  { id:"pro",   name:"Pro",   price:999,    color:C.accent, features:["Unlimited AI questions","MCQ + Short + Essay","All subjects","PDF/PPT uploads","Full analytics","Priority AI"], cta:"Start Free Trial",popular:true  },
-  { id:"team",  name:"Team",  price:2999,   color:C.alt,    features:["Everything in Pro","Up to 10 users","Shared question banks","Teacher dashboard","Export reports","Custom branding"], cta:"Contact Sales",   popular:false },
+  { id:"pro",   name:"Pro",   price:200,    color:C.accent, features:["Unlimited AI questions","MCQ + Short + Essay","All subjects","PDF/PPT uploads","Full analytics","Priority AI"], cta:"Start Free Trial",popular:true  },
+  { id:"team",  name:"Team",  price:500,   color:C.alt,    features:["Everything in Pro","Up to 10 users","Shared question banks","Teacher dashboard","Export reports","Custom branding"], cta:"Contact Sales",   popular:false },
 ];
 
 // ─── GLOBAL CSS ───────────────────────────────────────────────────────────────
