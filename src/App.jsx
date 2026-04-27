@@ -1,5 +1,5 @@
 // ─── API CONFIGURATION ───────────────────────────────────────────────────────
-const API_BASE_URL = 'https://tutormatch-beige.vercel.app'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://tutormatch-beige.vercel.app'
 
 // Make it globally available for all fetch calls
 window.API_BASE_URL = API_BASE_URL
