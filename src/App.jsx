@@ -1089,6 +1089,12 @@ function QuizPage({user}){
   const [finished,setFinished]=useState(false);
   const [loading,setLoading]=useState(false);
   const [feedback,setFeedback]=useState(null);
+// ADD THIS - records result after score state has fully settled
+useEffect(()=>{
+  if(finished && user?.id && questions.length){
+    recordQuizResult(user.id, topic, score, questions.length);
+  }
+},[finished]);
 
   const startQuiz=async()=>{
     if(!topic.trim())return;setLoading(true);
@@ -1153,7 +1159,7 @@ function QuizPage({user}){
           })}
         </div>
         {feedback&&<div style={{marginTop:12,padding:"9px 13px",background:C.surface,borderRadius:8,fontSize:14,color:C.muted}}>{feedback}</div>}
-        {selected&&<Btn style={{marginTop:14}} onClick={()=>{if(current+1>=questions.length){if(user?.id) recordQuizResult(user.id, topic, score, questions.length); setFinished(true);}else{setCurrent(c=>c+1);setSelected(null);setFeedback(null);}}}>{current+1>=questions.length?"See Results":"Next →"}</Btn>}
+        {selected&&<Btn style={{marginTop:14}} onClick={()=>{if(current+1>=questions.length){setFinished(true);}else{setCurrent(c=>c+1);setSelected(null);setFeedback(null);}}}>{current+1>=questions.length?"See Results":"Next →"}</Btn>}
       </div>
     </div>
   );
