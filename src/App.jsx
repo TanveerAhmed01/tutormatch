@@ -1153,7 +1153,7 @@ function QuizPage({user}){
           })}
         </div>
         {feedback&&<div style={{marginTop:12,padding:"9px 13px",background:C.surface,borderRadius:8,fontSize:14,color:C.muted}}>{feedback}</div>}
-        {selected&&<Btn style={{marginTop:14}} onClick={()=>{if(current+1>=questions.length){const isLastCorrect=selected.startsWith(questions[current].answer);const finalScore=score+(isLastCorrect?1:0);if(user?.id) recordQuizResult(user.id, topic, finalScore, questions.length);setFinished(true);}else{setCurrent(c=>c+1);setSelected(null);setFeedback(null);}}}>{current+1>=questions.length?"See Results":"Next →"}</Btn>}
+        {selected&&<Btn style={{marginTop:14}} onClick={()=>{if(current+1>=questions.length){if(user?.id) recordQuizResult(user.id, topic, score, questions.length); setFinished(true);}else{setCurrent(c=>c+1);setSelected(null);setFeedback(null);}}}>{current+1>=questions.length?"See Results":"Next →"}</Btn>}
       </div>
     </div>
   );
@@ -1161,12 +1161,17 @@ function QuizPage({user}){
 
 // ─── ANALYTICS PAGE ───────────────────────────────────────────────────────────
 function AnalyticsPage({plan,setPage,user}){
-  const [results,setResults] = useState([]);
+  
 
-  useEffect(()=>{
-    const all = loadAnalytics();
-    setResults(all[user?.id]||[]);
-  },[user?.id]);
+  const [results,setResults] = useState(()=>{
+  const all = loadAnalytics();
+  return all[user?.id]||[];
+});
+
+useEffect(()=>{
+  const all = loadAnalytics();
+  setResults(all[user?.id]||[]);
+});  // ← no dependency array — runs on every render/navigation
 
   // ── Computed stats ──
   const totalQuizzes   = results.length;
