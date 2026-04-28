@@ -1161,17 +1161,12 @@ function QuizPage({user}){
 
 // ─── ANALYTICS PAGE ───────────────────────────────────────────────────────────
 function AnalyticsPage({plan,setPage,user}){
-  
+  const [results,setResults] = useState([]);
 
-  const [results,setResults] = useState(()=>{
-  const all = loadAnalytics();
-  return all[user?.id]||[];
-});
-
-useEffect(()=>{
-  const all = loadAnalytics();
-  setResults(all[user?.id]||[]);
-});  // ← no dependency array — runs on every render/navigation
+  useEffect(()=>{
+    const all = loadAnalytics();
+    setResults(all[user?.id]||[]);
+  },[user?.id]);
 
   // ── Computed stats ──
   const totalQuizzes   = results.length;
@@ -1191,15 +1186,7 @@ useEffect(()=>{
     return count;
   })();
 
-  // Last 14 calendar days for trend chart
-  const last14 = Array.from({length:14},(_,i)=>{
-    const d = new Date(); d.setDate(d.getDate()-(13-i)); d.setHours(0,0,0,0);
-    const key = d.toISOString().slice(0,10);
-    const dayResults = results.filter(r=>r.date.slice(0,10)===key);
-    const pct = dayResults.length ? Math.round(dayResults.reduce((s,r)=>s+Math.round((r.score/r.total)*100),0)/dayResults.length) : null;
-    return {label:`D${i+1}`, pct};
-  });
-
+ 
   // Subject breakdown: group by topic, average score
   const subjectMap = {};
   results.forEach(r=>{
@@ -1250,20 +1237,7 @@ useEffect(()=>{
           ))}
         </div>
 
-        {/* 14-day trend */}
-        <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:13,padding:20,marginTop:18}}>
-          <h3 style={{fontFamily:"'Syne',sans-serif",fontWeight:700,marginBottom:4}}>14-Day Score Trend</h3>
-          <p style={{color:C.muted,fontSize:12,marginBottom:14}}>Average quiz score per day. Empty bars = no quiz that day.</p>
-          <div style={{display:"flex",alignItems:"flex-end",gap:4,height:110}}>
-            {last14.map(({label,pct},i)=>(
-              <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,height:"100%",justifyContent:"flex-end"}}>
-                {pct!==null&&<span style={{fontSize:9,color:C.accent,fontWeight:700,marginBottom:2}}>{pct}%</span>}
-                <div style={{width:"100%",background:pct!==null?C.accent+(pct>=85?"ff":pct>=70?"bb":"66"):C.border,borderRadius:"3px 3px 0 0",height:pct!==null?`${pct}%`:"4px",minHeight:4,transition:"height .5s"}}/>
-                <span style={{fontSize:8,color:C.muted}}>{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        
 
         {/* Subject breakdown */}
         {subjects.length>0&&(
