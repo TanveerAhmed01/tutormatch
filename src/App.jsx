@@ -1164,9 +1164,20 @@ function AnalyticsPage({plan,setPage,user}){
   const [results,setResults] = useState([]);
 
   useEffect(()=>{
-    const all = loadAnalytics();
-    setResults(all[user?.id]||[]);
-  },[user?.id]);
+  const all = loadAnalytics();
+  setResults(all[user?.id]||[]);
+  
+  // Force refresh every time we enter Analytics
+  const handleVisibilityChange = () => {
+    if(!document.hidden) {
+      const updated = loadAnalytics();
+      setResults(updated[user?.id]||[]);
+    }
+  };
+  
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+},[user?.id]);
 
   // ── Computed stats ──
   const totalQuizzes   = results.length;
