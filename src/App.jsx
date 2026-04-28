@@ -1379,7 +1379,7 @@ export default function App(){
     generate:  <GeneratePage  plan={plan} setPage={setPage}/>,
     quiz:      <QuizPage user={user}/>,
     tutors:    <TutorMatchPage plan={plan} setPage={setPage} user={user}/>,
-    analytics: <AnalyticsPage plan={plan} setPage={setPage} user={user}/>,
+    analytics: <AnalyticsPage key={page==="analytics"?1:0} plan={plan} setPage={setPage} user={user}/>, // Add key here
     pricing:   <PricingPage   plan={plan} setPlan={setPlan}/>,
     profile:   <TutorProfilePage user={user} onUpdateUser={handleUpdateUser}/>,
     messages:  <MessagesPage  user={user}/>,
