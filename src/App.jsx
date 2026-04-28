@@ -1164,20 +1164,9 @@ function AnalyticsPage({plan,setPage,user}){
   const [results,setResults] = useState([]);
 
   useEffect(()=>{
-  const all = loadAnalytics();
-  setResults(all[user?.id]||[]);
-  
-  // Force refresh every time we enter Analytics
-  const handleVisibilityChange = () => {
-    if(!document.hidden) {
-      const updated = loadAnalytics();
-      setResults(updated[user?.id]||[]);
-    }
-  };
-  
-  document.addEventListener('visibilitychange', handleVisibilityChange);
-  return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-},[user?.id]);
+    const all = loadAnalytics();
+    setResults(all[user?.id]||[]);
+  },[user?.id]);
 
   // ── Computed stats ──
   const totalQuizzes   = results.length;
@@ -1390,7 +1379,7 @@ export default function App(){
     generate:  <GeneratePage  plan={plan} setPage={setPage}/>,
     quiz:      <QuizPage user={user}/>,
     tutors:    <TutorMatchPage plan={plan} setPage={setPage} user={user}/>,
-    analytics: <AnalyticsPage key={page==="analytics"?1:0} plan={plan} setPage={setPage} user={user}/>, // Add key here
+    analytics: <AnalyticsPage plan={plan} setPage={setPage} user={user}/>,
     pricing:   <PricingPage   plan={plan} setPlan={setPlan}/>,
     profile:   <TutorProfilePage user={user} onUpdateUser={handleUpdateUser}/>,
     messages:  <MessagesPage  user={user}/>,
