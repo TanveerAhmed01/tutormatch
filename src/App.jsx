@@ -959,29 +959,38 @@ function GeneratePage({plan,setPage}){
     setTopic(file.name.replace(/\.[^.]+$/,"").replace(/[-_]/g," "));
   };
 
-  const handleGenerate=async()=>{
-    if(uploadMode==="topic"&&!topic.trim()){setError("Enter a topic.");return;}
-    if(uploadMode==="file"&&!uploadedFile){setError("Upload a file first.");return;}
-    if(plan==="free"&&dailyUsed>=dailyLimit){setError("Daily limit reached. Upgrade to Pro!");return;}
-    setError("");setLoading(true);setQuestions([]);
-    const tl={mcq:"multiple-choice (MCQ)",short:"short-answer",essay:"essay"}[qType];
-    const spec=`Return ONLY a JSON array:\n- MCQ: {"q":"...","options":["A)...","B)...","C)...","D)..."],"answer":"A"}\n- Short: {"q":"...","answer":"..."}\n- Essay: {"q":"...","guidance":"Key points..."}`;
-    try{
-      const messages=uploadMode==="file"&&uploadedFile
-        ?[{role:"user",content:[{type:"document",source:{type:"base64",media_type:uploadedFile.mediaType,data:uploadedFile.base64}},{type:"text",text:`Generate ${count} ${tl} questions at ${difficulty} difficulty from this file.\n${spec}`}]}]
-        :[{role:"user",content:`Generate ${count} ${tl} questions on "${topic}" in ${subject} at ${difficulty} difficulty.\n${spec}`}];
-      const prompt = uploadMode==="file"&&uploadedFile
-  ? `Generate ${count} ${tl} questions at ${difficulty} difficulty from the uploaded file. Return ONLY JSON array: [{"q":"...","options":["A)...","B)...","C)...","D)..."],"answer":"A"}]`
-  : `Generate ${count} ${tl} questions on "${topic}" in ${subject} at ${difficulty} difficulty. Return ONLY JSON array: [{"q":"...","options":["A)...","B)...","C)...","D)..."],"answer":"A"}]`;
+ const handleGenerate=async()=>{
+  if(uploadMode==="topic"&&!topic.trim()){setError("Enter a topic.");return;}
+  if(uploadMode==="file"&&!uploadedFile){setError("Upload a file first.");return;}
+  if(plan==="free"&&dailyUsed>=dailyLimit){setError("Daily limit reached. Upgrade to Pro!");return;}
+  setError("");setLoading(true);setQuestions([]);
+  
+  const tl={mcq:"multiple-choice (MCQ)",short:"short-answer",essay:"essay"}[qType];
+  
+  try{
+    // For file uploads, just send the topic/filename, not the actual file
+    const prompt = uploadMode==="file"&&uploadedFile
+      ? `Generate ${count} ${tl} questions at ${difficulty} difficulty about the topic "${topic}". Return ONLY JSON array: [{"q":"...","options":["A)...","B)...","C)...","D)..."],"answer":"A"}]`
+      : `Generate ${count} ${tl} questions on "${topic}" in ${subject} at ${difficulty} difficulty. Return ONLY JSON array: [{"q":"...","options":["A)...","B)...","C)...","D)..."],"answer":"A"}]`;
 
-const res=await fetch(window.API_BASE_URL + "/api/generate-questions",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});
-      const data=await res.json();
-      const raw=data.content?.find(b=>b.type==="text")?.text||"[]";
-      setQuestions(JSON.parse(raw.replace(/```json|```/g,"").trim()));
-      setDailyUsed(d=>d+1);
-    }catch{setError("Failed to generate. Try again.");}
-    setLoading(false);
-  };
+    const res=await fetch(window.API_BASE_URL + "/api/generate-questions",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({prompt})
+    });
+    
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    
+    const data=await res.json();
+    const raw=data.content?.find(b=>b.type==="text")?.text||"[]";
+    setQuestions(JSON.parse(raw.replace(/```json|```/g,"").trim()));
+    setDailyUsed(d=>d+1);
+  }catch(err){
+    console.error("❌ Generation error:", err);
+    setError("Failed to generate. Try again.");
+  }
+  setLoading(false);
+};
 
   return(
     <div style={{padding:"40px 28px 80px",maxWidth:960,margin:"0 auto"}}>
