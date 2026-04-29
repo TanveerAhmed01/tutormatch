@@ -155,7 +155,7 @@ function AuthScreen({onAuth}){
         <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:44,letterSpacing:-1}}>
           Tutor<span style={{color:C.accent}}>Match</span>
         </div>
-        <p style={{color:C.muted,marginTop:10,fontSize:16}}>The AI-powered learning platform</p>
+        <p style={{color:C.muted,marginTop:10,fontSize:16}}>An AI-Powered Learning Platform</p>
       </div>
       <div className="fadeUp" style={{display:"flex",gap:22,flexWrap:"wrap",justifyContent:"center",marginBottom:40}}>
         {[
