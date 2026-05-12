@@ -1,17 +1,18 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
+import './index.css'
 
-// ─── API CONFIGURATION ───
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
-console.log(" API Base URL:", API_BASE_URL);
+// Set API base URL based on environment
+const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://tutormatch-beige.vercel.app'
+  : 'http://localhost:3001'
 
-// Make it global so all components can access it
-window.API_BASE_URL = API_BASE_URL;
+// Make it globally available
+window.API_BASE_URL = API_BASE_URL
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
+  </React.StrictMode>,
 )
