@@ -12,6 +12,7 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "http://localhost:3000",
+    "https://tutormatch-frontend-three.vercel.app",
     process.env.FRONTEND_URL || "https://tutormatch.vercel.app"
   ],
   credentials: true
